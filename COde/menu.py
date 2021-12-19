@@ -3,6 +3,7 @@ import avl
 import move
 from tkinter import *
 from functools import partial
+pygame.init()
 
 class Menu():
     def __init__(self, game):
@@ -11,6 +12,7 @@ class Menu():
         self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = - 100
+        self.main_music = pygame.mixer.init()
 
     def draw_cursor(self):
         self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
@@ -29,19 +31,91 @@ class MainMenu(Menu):
         self.HowToPlayx, self.HowToPlayy = self.mid_w, self.mid_h + 60
         self.Exitx, self.Exity = self.mid_w, self.mid_h + 90
         self.cursor_rect.midtop = (self.startx + self.offset, self.starty+20)
+        
+    def txthsname(self):
+        scoredatatmp = ''
+        with open("score.txt") as file_in: #เช็คว่าใน score.txt มีชื่อซ้ำไหมถ้ามีให้แก้เป็นของใหม่
+            for line in file_in:
+                
+                scoreRead = line.split()
+                
+                scoredatatmp += str(scoreRead[0])+' '*(10-len(scoreRead[0]))+str(scoreRead[1])+'\n'
+        
+        return scoredatatmp
+
+    def txthsname(self):
+        scoredatatmp = ''
+        ndata = 0
+        with open("score.txt") as file_in: #เช็คว่าใน score.txt มีชื่อซ้ำไหมถ้ามีให้แก้เป็นของใหม่
+            for line in file_in :
+                scoreRead = line.split()
+                scoredatatmp += str(scoreRead[0])+'\n'
+                ndata+=1
+                if ndata>=5:
+                    break
+        return scoredatatmp
+
+    def txthsscore(self):
+        scoredatatmp = ''
+        ndata = 0
+        with open("score.txt") as file_in: #เช็คว่าใน score.txt มีชื่อซ้ำไหมถ้ามีให้แก้เป็นของใหม่
+            for line in file_in :
+                scoreRead = line.split()
+                scoredatatmp += str(scoreRead[1])+'\n'
+                ndata+=1
+                if ndata>=5:
+                    break
+        return scoredatatmp
+
+    def blit_text(self,surface, text, pos, font, color=pygame.Color('white')):
+        words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+        space = font.size(' ')[0]  # The width of a space.
+        max_width, max_height = surface.get_size()
+        x, y = pos
+        for line in words:
+            for word in line:
+                word_surface = font.render(word, 0, color)
+                word_width, word_height = word_surface.get_size()
+                if x + word_width >= max_width:
+                    x = pos[0]  # Reset the x.
+                    y += word_height  # Start on new row.
+                surface.blit(word_surface, (x, y))
+                x += word_width + space
+            x = pos[0]  # Reset the x.
+            y += word_height  # Start on new row.
 
     def display_menu(self):
+        k=50
+        poshs_y = self.game.DISPLAY_H / 2 +100
+        poshs_x_name = self.game.DISPLAY_W / 2+200+k
+        poshs_x_score = self.game.DISPLAY_W / 2+300+k
+
+        font = pygame.font.SysFont(pygame.font.get_default_font(), 30)
         self.run_display = True
+        pygame.mixer.music.unload()
+        pygame.mixer.music.load("Kings_tree.mp3")
+        pygame.mixer.music.play(-1)
+    
         while self.run_display:
+            
+        
             self.game.check_events()
             self.check_input()
             self.game.display.fill(self.game.BLACK)
-            self.game.draw_text('Main Menu', 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 50)
+            self.game.draw_text("Top #5 high score", 30, poshs_x_name+120, poshs_y+40)
+            self.blit_text(self.game.display,self.txthsname(),(poshs_x_name+40, poshs_y+60),font)
+            self.blit_text(self.game.display,self.txthsscore(),(poshs_x_score+40, poshs_y+60),font)
+
+            self.game.draw_text("King's Tree", 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 50)
             self.game.draw_text("Start Game", 30, self.startx, self.starty+20)
             self.game.draw_text("HowToPlay", 30, self.HowToPlayx, self.HowToPlayy+40)
             self.game.draw_text("Exit", 30, self.Exitx, self.Exity+60)
+            
+            
             self.draw_cursor()
             self.blit_screen()
+            pygame.display.update()
+            
 
 
     def move_cursor(self):
@@ -89,7 +163,7 @@ class HowToPlayMenu(Menu):
 
     def display_menu(self):
         self.run_display = True
-        bg1 = pygame.image.load("COde/HTP.jpg")
+        bg1 = pygame.image.load("HTP.jpg")
         bg1 = pygame.transform.scale(bg1, (self.game.DISPLAY_W,self.game.DISPLAY_H))
         while self.run_display:
             self.game.check_events()
@@ -173,6 +247,9 @@ class FinishedState(Menu):
 
     def display_menu(self):
         self.run_display = True 
+        pygame.mixer.music.unload()
+        pygame.mixer.music.load("pogChamp.mp3")
+        pygame.mixer.music.play(-1)
         while self.run_display:
             self.check_input()
             self.game.display.fill(self.game.BLACK)
@@ -214,14 +291,14 @@ class FinishedState(Menu):
                     #move.nmove = 0
                     self.run_display = False
                     scoredatatmp = Queue() #เอาไว้ดึงข้อมูลใน score.txt มาเก็บไว้ใน list
-                    with open("COde/score.txt") as file_in: #เช็คว่าใน score.txt มีชื่อซ้ำไหมถ้ามีให้แก้เป็นของใหม่
+                    with open("score.txt") as file_in: #เช็คว่าใน score.txt มีชื่อซ้ำไหมถ้ามีให้แก้เป็นของใหม่
                         for line in file_in:
                             print(line)
                             scoreRead = line.split()
                             scoredatatmp.enqueue(scoreRead)
                     scoredatatmp.enqueue([self.user_text,str(self.game.score)])
                     scoredatatmp.data = self.bbsort(scoredatatmp.data)
-                    with open('COde/score.txt', 'w') as f: #เขียนข้อมูลใน list ที่เก็บ scoredatatmp ไว้ลง txt
+                    with open('score.txt', 'w') as f: #เขียนข้อมูลใน list ที่เก็บ scoredatatmp ไว้ลง txt
                         for item in scoredatatmp.data:
                             f.write(item[0] + "  " + item[1]+"\n")
                     self.user_text = ''

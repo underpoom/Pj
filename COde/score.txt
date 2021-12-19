@@ -1,4 +1,6 @@
 rrr  100.0
+Delta  100.0
+ppl  100.0
 rrtt  80.0
 qwwqc  80.0
 iii  75.0

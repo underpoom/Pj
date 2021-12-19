@@ -28,7 +28,7 @@ class Game():
 
     def game_loop(self):
         self.lChild,self.now,self.rChid = 30,50,90
-        bg = pygame.image.load("COde/bg.jpg")
+        bg = pygame.image.load("bg.jpg")
         bg = pygame.transform.scale(bg, (self.DISPLAY_W,self.DISPLAY_H))
         while self.playing:
             self.check_events()
