@@ -67,7 +67,8 @@ class MainMenu(Menu):
                     break
         return scoredatatmp
 
-    def blit_text(self,surface, text, pos, font, color=pygame.Color('white')):
+    def blit_text(self,surface, text, pos, font, color=pygame.Color('orangered')):
+        #color = self.game.RAINBOW1
         words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
         space = font.size(' ')[0]  # The width of a space.
         max_width, max_height = surface.get_size()
@@ -95,17 +96,30 @@ class MainMenu(Menu):
         pygame.mixer.music.unload()
         pygame.mixer.music.load("Kings_tree.mp3")
         pygame.mixer.music.play(-1)
-    
+
+        
+        bgtree = pygame.image.load("treebg.png")
+        
+        bgtree = pygame.transform.scale(bgtree, (self.game.DISPLAY_W,self.game.DISPLAY_H))
+          
+        recttt = pygame.Surface((300,180))
+        recttt.set_alpha(128)
+        recttt.fill((0,0,0))
+
         while self.run_display:
             
         
             self.game.check_events()
             self.check_input()
-            self.game.display.fill(self.game.BLACK)
-            self.game.draw_text("Top #5 high score", 30, poshs_x_name+120, poshs_y+40)
+            
+
+            self.game.display.blit(bgtree,(0,0))
+            self.game.display.blit(recttt,(3/4*self.game.DISPLAY_W -50,self.game.DISPLAY_H * 3/4 - 50))
+            self.game.draw_text("Top #5 high score", 30, poshs_x_name+120, poshs_y+40,1)
             self.blit_text(self.game.display,self.txthsname(),(poshs_x_name+40, poshs_y+60),font)
             self.blit_text(self.game.display,self.txthsscore(),(poshs_x_score+40, poshs_y+60),font)
-
+            
+            #pygame.draw.rect(self.game.display,GREEN, pygame.Rect(50,50,90,180) )
             self.game.draw_text("King's Tree", 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 50)
             self.game.draw_text("Start Game", 30, self.startx, self.starty+20)
             self.game.draw_text("HowToPlay", 30, self.HowToPlayx, self.HowToPlayy+40)

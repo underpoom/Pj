@@ -16,6 +16,7 @@ class Game():
         self.window = pygame.display.set_mode(((self.DISPLAY_W,self.DISPLAY_H)))        
         self.font_name = pygame.font.get_default_font()
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
+        self.RAINBOW1 = (255,215,0)
         self.finished_state = FinishedState(self)
         self.main_menu = MainMenu(self)
         self.HowToPlay = HowToPlayMenu(self)
@@ -87,9 +88,12 @@ class Game():
     def reset_keys(self):
         self.ESC_KEY,self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False,False,False,False
 
-    def draw_text(self, text, size, x, y ):
+    def draw_text(self, text, size, x, y ,deff = 0):
         font = pygame.font.Font(self.font_name,size)
-        text_surface = font.render(text, True, self.WHITE)
+        if deff == 0:
+            text_surface = font.render(text, True, self.WHITE)
+        else:
+            text_surface = font.render(text, True, pygame.Color("orangered"))
         text_rect = text_surface.get_rect()
         text_rect.center = (x,y)
         self.display.blit(text_surface,text_rect)
