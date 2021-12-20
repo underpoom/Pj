@@ -89,7 +89,7 @@ class Game():
         self.ESC_KEY,self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False,False,False,False
 
     def draw_text(self, text, size, x, y ,deff = 0):
-        font = pygame.font.Font(self.font_name,size)
+        font = pygame.font.Font("arial.ttf",size)
         if deff == 0:
             text_surface = font.render(text, True, self.WHITE)
         else:
